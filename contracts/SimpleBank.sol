@@ -5,29 +5,35 @@ contract SimpleBank {
     mapping (address => uint) internal balances;
 
     /* Let's make sure everyone knows who owns the bank. Use the appropriate keyword for this*/
-    address owner;
+    address public owner;
 
     // Events - publicize actions to external listeners
     /* Add 2 arguments for this event, an accountAddress and an amount */
-    event LogDepositMade();
+    event LogDepositMade(address _accountAddress, uint _amount);
 
     // Constructor, can receive one or many variables here; only one allowed
     function SimpleBank() {
         /* Set the owner to the creator of this contract */
+        owner = msg.sender;
     }
 
     /// @notice Enroll a customer with the bank, giving them 1000 tokens for free
     /// @return The balance of the user after enrolling
     function enroll() public returns (uint){
       /* Set the sender's balance to 1000, return the sender's balance */
+      balances[msg.sender] = 1000;
+      return balances[msg.sender];
     }
 
     /// @notice Deposit ether into bank
     /// @return The balance of the user after the deposit is made
     // Add the appropriate keyword so that this function can receive ether
-    function deposit() public returns (uint) {
+    function deposit() public returns (uint) payable {
         /* Add the amount to the user's balance, call the event associated with a deposit,
           then return the balance of the user */
+          balances[msg.sender] = balances[msg.sender] + msg.value;
+          LogDepositMade(msg.sender, msg.value);
+          return balances[msg.sender];
     }
 
     /// @notice Withdraw ether from bank
@@ -39,6 +45,10 @@ contract SimpleBank {
            Subtract the amount from the sender's balance, and try to send that amount of ether
            to the user attempting to withdraw. IF the send fails, add the amount back to the user's balance
            return the user's balance.*/
+          require(withdrawAmount =< balances[msg.sender]);
+          remainingBal = balances[msg.sender] - withdrawAmount;
+          balances[msg.sender] = remainingBal;
+          msg.sender.transfer(withdrawAmount);
 
     }
 
