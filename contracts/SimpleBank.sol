@@ -28,7 +28,7 @@ contract SimpleBank {
     /// @notice Deposit ether into bank
     /// @return The balance of the user after the deposit is made
     // Add the appropriate keyword so that this function can receive ether
-    function deposit() public returns (uint) payable {
+    function deposit() public payable returns (uint) {
         /* Add the amount to the user's balance, call the event associated with a deposit,
           then return the balance of the user */
           balances[msg.sender] = balances[msg.sender] + msg.value;
@@ -45,7 +45,7 @@ contract SimpleBank {
            Subtract the amount from the sender's balance, and try to send that amount of ether
            to the user attempting to withdraw. IF the send fails, add the amount back to the user's balance
            return the user's balance.*/
-          require(withdrawAmount =< balances[msg.sender]);
+          require(withdrawAmount <= balances[msg.sender]);
           remainingBal = balances[msg.sender] - withdrawAmount;
           balances[msg.sender] = remainingBal;
           msg.sender.transfer(withdrawAmount);
