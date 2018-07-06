@@ -9,10 +9,10 @@ contract SimpleBank {
 
     // Events - publicize actions to external listeners
     /* Add 2 arguments for this event, an accountAddress and an amount */
-    event LogDepositMade(address _accountAddress, uint _amount);
+    event LogDepositMade(address accountAddress, uint amount);
 
     // Constructor, can receive one or many variables here; only one allowed
-    function SimpleBank() {
+    constructor() {
         /* Set the owner to the creator of this contract */
         owner = msg.sender;
     }
@@ -32,8 +32,8 @@ contract SimpleBank {
         /* Add the amount to the user's balance, call the event associated with a deposit,
           then return the balance of the user */
           balances[msg.sender] = balances[msg.sender] + msg.value;
-          LogDepositMade(msg.sender, msg.value);
-          return balances[msg.sender];
+          emit LogDepositMade(msg.sender, msg.value);
+          balance();
     }
 
     /// @notice Withdraw ether from bank
@@ -49,7 +49,7 @@ contract SimpleBank {
           remainingBal = balances[msg.sender] - withdrawAmount;
           balances[msg.sender] = remainingBal;
           msg.sender.transfer(withdrawAmount);
-
+          return remainingBal;
     }
 
     /// @notice Get balance
@@ -58,6 +58,7 @@ contract SimpleBank {
     // allows function to run locally/off blockchain
     function balance() public constant returns (uint) {
         /* Get the balance of the sender of this transaction */
+        return balances[msg.sender];
 
     }
 
